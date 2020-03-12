@@ -4,27 +4,27 @@ from collections import defaultdict
 
 
 ##### Define
-Well = 'W'
+Wall = 'W'
 Start = 'S'
 Goal = 'G'
 Beyond = 'B'
 Path = 'P'
 
 
-####### Read from file to arry
+####### Read from file to array
 def readFile(fileName):
-    # Read from file par lane
+    # Read from file per line
     with open(fileName, "r") as f:
         maze = f.readlines()
 
-    #Split lanes per char 
-    maze = list(map(lambda lane: [char for char in lane], maze))
-    #Delete '\n' from lanes
-    maze=[lane[:len(lane)-1]if lane[-1] == '\n' else lane for lane in maze ]
+    #Split lines by char 
+    maze = list(map(lambda line: [char for char in line], maze))
+    #Delete '\n' from lines
+    maze=[line[:len(line)-1]if line[-1] == '\n' else line for line in maze ]
     return maze
 
 
-###### Write to file solution of maze arry format
+###### Write to file the solution of the maze in an array format
 def writeFile(fileName, maze):
     with open(fileName, 'w') as f:
         for item in maze:  
@@ -37,23 +37,23 @@ class Graph:
 
     # Constructor
     def __init__(self):
-        # default dictionary to store graph
+        # default dictionary to store the graph
         self.graph = defaultdict(set)
 
-    # Method for print graph
+    # Method to print the graph
     def __repr__(self):
         return str(self.graph)
 
-    # Method  to add an vertice to graph
-    def addVertice(self, u):
+    # Method  to add a vertex to the graph
+    def addvertex(self, u):
         self.graph[u]
 
-    # Method  to add an edge to graph
+    # Method  to add an edge to the graph
     def addEdge(self, u, v):
         self.graph[u].add(v)
         self.graph[v].add(u)
 
-    # Method to get a bast path of graph
+    # Method to get the best path in the graph
     def bfs_path(self, start, goal):
         queue = [(start, [start])]
         while queue:
@@ -64,8 +64,8 @@ class Graph:
                 else:
                     queue.append((next, path + [next]))
 
-# Function maping a maze to graph
-def maping(maze):
+# Function to map the maze into a graph
+def mapping(maze):
     graph = Graph()
     start = None
     goal = None
@@ -76,14 +76,14 @@ def maping(maze):
         for j in range(lastCol+1):
             if maze[i][j] == Start:
                 if start:
-                    raise ValueError('sorry,you have more one start point in maze')
+                    raise ValueError('Sorry,you have more than one starting point in the maze')
                 start = (i, j)
-                graph.addVertice(start)
+                graph.addvertex(start)
             elif maze[i][j] == Goal:
                 if goal:
-                    raise ValueError('sorry,you have more one start point in maze')
+                    raise ValueError('Sorry,you have more than one starting point in the maze')
                 goal = (i, j)
-                graph.addVertice(goal)
+                graph.addvertex(goal)
             elif maze[i][j] == Beyond:
                 if i > 0 and (maze[i-1][j] == Beyond or maze[i-1][j] == Goal or maze[i-1][j] == Start):
                     graph.addEdge((i, j), (i-1, j))
@@ -95,16 +95,16 @@ def maping(maze):
                     graph.addEdge((i, j), (i, j+1))
     return(graph, start, goal)
 
-#Function give a solution to maze 
+#Function to solve the maze 
 def getPath(graph, maze): 
     graph, start, goal = graph[0], graph[1], graph[2]
     if not start:
-        raise ValueError('sorry,missing a start point in maze')
+        raise ValueError('Sorry,missing a starting point in the maze')
     if not goal:
-        raise ValueError('sorry,missing a goal point in maze')
+        raise ValueError('Sorry,missing a goal point in the maze')
     path = graph.bfs_path(start, goal)
     if not path:
-        raise ValueError('sorry,can\'t find path solving this maze')
+        raise ValueError('Sorry,can\'t find a path to solve this maze')
     for index in path:
         i, j = index[0], index[1]
         if maze[i][j] == Beyond:
@@ -114,13 +114,13 @@ def getPath(graph, maze):
 #Main function
 if __name__ == "__main__":
     if len(sys.argv) != 3:
-        print("sorry,missing args you need enter 2 args (input and output files)")
-        print("example for bash :$ python maze.py input1.txt output.txt")
+        print("Sorry,missing arguments. You need to enter 2 arguments (input and output files)")
+        print("Example for bash :$ python maze.py input1.txt output.txt")
         exit(1)
     else:
         try:
             maze = readFile(sys.argv[1])
-            graph = maping(maze)
+            graph = mapping(maze)
             solution = getPath(graph, maze)
             writeFile(sys.argv[2], solution)
         except ValueError as error:
